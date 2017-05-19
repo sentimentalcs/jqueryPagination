@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<title>Products-{$keywords.intro}</title>
+		<meta name="keywords" content="{$keywords.keywords}">
+		<meta name="description" content="{$keywords.description}">
+		<link rel="stylesheet" type="text/css" href="/public/addon/style/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/addon/style/css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/addon/style/css/font-awesome.min.css"/>
+		<script type="text/javascript" src="/public/addon/style/js/jquery.min.js" ></script>
+		<script type="text/javascript" src="/public/addon/style/js/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="/public/addon/style/js/supslide.js" ></script>
+		<script type="text/javascript" src="/public/addon/style/js/common.js" ></script>
+        <script type="text/javascript" src="/public/addon/style/jquery.pagination.js"></script>
+	</head>
+	<body>
+	<block name="include"><include file="base:header" /></block>
+		
+		<!--面包屑导航-->
+		<div class="container daohang">
+			<ol class="breadcrumb">
+				<li><span class="fa fa-home"></span>You are here：</li>
+			    <li><a href="__APP__/">Home</a></li>
+			    <li><a href="__APP__/site/products">Product</a></li>
+			    <li class="active"></li>
+			</ol>
+		</div>
+		
+		<!--products-->
+		<div class="products container">
+			<div class="row">
+				<div class="products-l col-lg-3">
+					<h2>Categories</h2>
+					<div class="hd">
+						<ul>
+                            <volist name="goodslist" id="vol" >
+
+                                <if condition="$_GET['name_seo'] eq $vol['name_seo']">
+                                    <li class="on"> <?php echo getTranslateLanguage('mall_content','name',$vol['id'],$language); ?><span class="fa fa-play-circle-o"></span></li>
+                                    <else/>
+                                    <li><?php echo getTranslateLanguage('mall_content','name',$vol['id'],$language); ?> <span class="fa fa-play-circle-o"></span></li>
+                                </if>
+
+                            </volist>
+						</ul>
+					</div>
+				</div>
+				<div class="products-r col-lg-9">
+					<h2>Brands Products</h2>
+					<div class="bd">
+                        <volist name="goodslist" id="vol">
+						<div class="row" id="row">
+                            <volist name="vol['down']" id="vo">
+							<div class="items col-lg-4 col-md-4 col-sm-4 col-xs-6" id="result">
+                                <a href="__APP__/product/{$vo.name_seo}"><img src="<?php echo getTranslateLanguage('mall_content','img',$vo['id'],en); ?>" alt="<?php echo getTranslateLanguage('mall_content','name',$vo['id'],$language); ?>" title="<?php echo getTranslateLanguage('mall_content','name',$vo['id'],$language); ?>"/></a>
+							</div>
+							<div class="pagination"></div>
+                            </volist>
+                            <script type="text/javascript">
+                                $(function(){
+									var items_per_page = 5;
+
+									//此demo通过Ajax加载分页元素
+									var initPagination = function() {
+										var num_entries = $("#hiddenresult div.result").length;
+										// 创建分页
+										$(".pagination").pagination(num_entries, {
+											num_edge_entries: 2, //边缘页数
+											num_display_entries: 4, //主体页数
+											callback: pageselectCallback,
+											items_per_page: items_per_page, //每页显示1项
+											prev_text: "前一页",
+											next_text: "后一页"
+										});
+									 };
+									 
+									function pageselectCallback(page_index, jq){
+										var start,
+											end ;
+								        start = items_per_page*(page_index+1-1);
+								        end   = start +  items_per_page - 1 +1;
+									    var new_content = $("#hiddenresult div.result").slice(start,end).clone();
+										console.log(page_index);
+
+										$("#Searchresult").empty().append(new_content); //装载对应分页的内容
+										return false;
+									}
+
+									//ajax加载
+									$("#hiddenresult").load("load.html", null, initPagination);
+								});
+                            </script>
+						</div>
+                        </volist>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<!--底部-->
+    <block name="include"><include file="base:header" /></block>
+	</body>
+</html>
